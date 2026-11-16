@@ -13,6 +13,8 @@ import appSettings from './settings/appSettings';
  */
 const KeyNames = {
     13: 'Enter',
+    // MediaPause (Tizen)
+    19: 'Pause',
     27: 'Escape',
     37: 'ArrowLeft',
     38: 'ArrowUp',
@@ -149,6 +151,18 @@ export function isInteractiveElement(element) {
     return false;
 }
 
+/**
+ * Returns _true_ if Left and Right move the caret in the element rather than focus:
+ * an editable field. In a read-only one (such as a TV's text field with its keyboard
+ * closed, see tvKeyboard) they move focus.
+ *
+ * @param {Element} element - Element.
+ * @return {boolean} _true_ if the element takes Left and Right.
+ */
+function isTypingIn(element) {
+    return isInteractiveElement(element) && !element.readOnly;
+}
+
 export function enable() {
     const hasMediaSession = 'mediaSession' in navigator;
     window.addEventListener('keydown', function (e) {
@@ -173,7 +187,7 @@ export function enable() {
 
         switch (key) {
             case 'ArrowLeft':
-                if (!isInteractiveElement(document.activeElement)) {
+                if (!isTypingIn(document.activeElement)) {
                     inputManager.handleCommand('left');
                 } else {
                     capture = false;
@@ -183,7 +197,7 @@ export function enable() {
                 inputManager.handleCommand('up');
                 break;
             case 'ArrowRight':
-                if (!isInteractiveElement(document.activeElement)) {
+                if (!isTypingIn(document.activeElement)) {
                     inputManager.handleCommand('right');
                 } else {
                     capture = false;
