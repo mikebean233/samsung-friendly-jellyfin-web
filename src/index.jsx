@@ -20,6 +20,7 @@ import getServerAddress from 'lib/jellyfin-apiclient/utils/getServerAddress';
 import { initialize as initializeAutoCast } from 'scripts/autocast';
 import browser from './scripts/browser';
 import keyboardNavigation from './scripts/keyboardNavigation';
+import tvKeyboard from './scripts/tvKeyboard';
 import { getPlugins } from './scripts/settings/webSettings';
 import taskButton from './scripts/taskbutton';
 import { pageClassOn, serverAddress } from './utils/dashboard';
@@ -131,6 +132,10 @@ build: ${__JF_BUILD_VERSION__}`);
 
     // Enable navigation controls
     keyboardNavigation.enable();
+    if (browser.tizen) {
+        // The on-screen keyboard opens on OK, not whenever a text field gets focus
+        tvKeyboard.enable();
+    }
     autoFocuser.enable();
 }
 
